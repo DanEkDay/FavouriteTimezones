@@ -262,7 +262,7 @@ body {
 
 .odometer-wheel {
   --offset: 0;
-  --digit-height: clamp(68px, 12vw, 98px);
+  --digit-height: clamp(58px, 10vw, 82px);
   --visible-height: clamp(76px, 12vw, 108px);
   position: relative;
   width: clamp(44px, 8vw, 68px);
@@ -397,13 +397,13 @@ body {
   }
 
   .odometer-wheel {
-    --digit-height: clamp(56px, 16vw, 76px);
+    --digit-height: clamp(48px, 14vw, 64px);
     --visible-height: clamp(64px, 16vw, 84px);
     width: clamp(34px, 11vw, 50px);
   }
 
   .clock-card--us .odometer-wheel {
-    --digit-height: clamp(56px, 16vw, 70px);
+    --digit-height: clamp(48px, 14vw, 60px);
     --visible-height: clamp(64px, 16vw, 78px);
     width: clamp(34px, 11vw, 42px);
   }
