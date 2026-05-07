@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wereldklokken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">Daymakers Favourite Timezones</p>
+      <h1><span>Realtime</span> <span>kantoortijden</span></h1>
+    </header>
+
+    <section class="clock-grid" aria-label="Kantoor klokken">
+      <article class="clock-card clock-card--nl" data-timezone="Europe/Amsterdam">
+        <img class="flag-badge" src="assets/flag-nl.svg" alt="Nederlandse vlag">
+        <div class="clock-copy">
+          <p class="clock-label">Kantoor Utrecht</p>
+          <p class="clock-city">Utrecht, Nederland</p>
+        </div>
+        <div class="clock-display" data-time></div>
+      </article>
+
+      <article class="clock-card clock-card--nl" data-timezone="Europe/Amsterdam">
+        <img class="flag-badge flag-badge--friesland" src="assets/flag-friesland-official.svg" alt="Friese vlag">
+        <div class="clock-copy">
+          <p class="clock-label">Kantoor Joure</p>
+          <p class="clock-city">Joure, Nederland</p>
+        </div>
+        <div class="clock-display" data-time></div>
+      </article>
+
+      <article class="clock-card clock-card--us" data-timezone="America/Los_Angeles">
+        <img class="flag-badge" src="assets/flag-us.svg" alt="Amerikaanse vlag">
+        <div class="clock-copy">
+          <p class="clock-label">Kantoor Oakland</p>
+          <p class="clock-city">Oakland, California, Verenigde Staten</p>
+        </div>
+        <div class="clock-display" data-time></div>
+      </article>
+
+      <article class="clock-card clock-card--us" data-timezone="America/Chicago">
+        <img class="flag-badge" src="assets/flag-us.svg" alt="Amerikaanse vlag">
+        <div class="clock-copy">
+          <p class="clock-label">Kantoor Des Moines</p>
+          <p class="clock-city">Des Moines, Iowa, Verenigde Staten</p>
+        </div>
+        <div class="clock-display" data-time></div>
+      </article>
+
+      <article class="clock-card clock-card--us" data-timezone="America/New_York">
+        <img class="flag-badge" src="assets/flag-us.svg" alt="Amerikaanse vlag">
+        <div class="clock-copy">
+          <p class="clock-label">Kantoor Atlanta</p>
+          <p class="clock-city">Atlanta, Georgia, Verenigde Staten</p>
+        </div>
+        <div class="clock-display" data-time></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

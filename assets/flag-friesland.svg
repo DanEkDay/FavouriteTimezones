@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-labelledby="title">
+  <title>Friese vlag</title>
+  <defs>
+    <clipPath id="flag">
+      <rect width="900" height="600"/>
+    </clipPath>
+    <path id="pompebled" d="M0-67c48-34 91 6 70 61C52 41 15 72 0 88-15 72-52 41-70-6-91-61-48-101 0-67Z"/>
+  </defs>
+  <rect width="900" height="600" fill="#fff"/>
+  <g clip-path="url(#flag)" fill="#005EB8">
+    <polygon points="-180,-80 20,-80 980,630 780,630"/>
+    <polygon points="250,-80 450,-80 1410,630 1210,630"/>
+    <polygon points="-610,-80 -410,-80 550,630 350,630"/>
+    <polygon points="680,-80 880,-80 1840,630 1640,630"/>
+  </g>
+  <g fill="#EF3329">
+    <use href="#pompebled" x="215" y="125" transform="rotate(-25 215 125) scale(.78)"/>
+    <use href="#pompebled" x="520" y="125" transform="rotate(-25 520 125) scale(.78)"/>
+    <use href="#pompebled" x="760" y="165" transform="rotate(-25 760 165) scale(.78)"/>
+    <use href="#pompebled" x="450" y="300" transform="rotate(-25 450 300) scale(.78)"/>
+    <use href="#pompebled" x="125" y="410" transform="rotate(-25 125 410) scale(.78)"/>
+    <use href="#pompebled" x="665" y="455" transform="rotate(-25 665 455) scale(.78)"/>
+    <use href="#pompebled" x="300" y="510" transform="rotate(-25 300 510) scale(.78)"/>
+  </g>
+</svg>
