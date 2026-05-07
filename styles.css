@@ -48,10 +48,7 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: "Daymakers", sans-serif;
-  background:
-    linear-gradient(115deg, rgba(255, 208, 113, 0.34) 0 18%, transparent 18% 100%),
-    linear-gradient(158deg, transparent 0 62%, rgba(95, 80, 225, 0.14) 62% 100%),
-    linear-gradient(180deg, var(--snow-spark) 0%, var(--dusty-drift) 100%);
+  background: var(--dusty-drift);
   color: var(--jet-abys);
 }
 
@@ -174,7 +171,7 @@ body {
 
 .clock-card--us .odometer-wheel {
   width: 58px;
-  height: 88px;
+  height: 96px;
 }
 
 .clock-card--us .odometer-strip span {
@@ -266,9 +263,10 @@ body {
 .odometer-wheel {
   --offset: 0;
   --digit-height: clamp(68px, 12vw, 98px);
+  --visible-height: clamp(76px, 12vw, 108px);
   position: relative;
   width: clamp(44px, 8vw, 68px);
-  height: var(--digit-height);
+  height: var(--visible-height);
   border-radius: 7px;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.16), transparent 16%, transparent 84%, rgba(0, 0, 0, 0.28)),
@@ -304,7 +302,7 @@ body {
 
 .odometer-strip {
   display: block;
-  transform: translateY(calc(var(--offset) * var(--digit-height) * -1));
+  transform: translateY(calc((var(--offset) * var(--digit-height) * -1) + ((var(--visible-height) - var(--digit-height)) / 2)));
   transition: transform 0.65s cubic-bezier(0.22, 0.68, 0.22, 1);
   will-change: transform;
 }
@@ -400,11 +398,13 @@ body {
 
   .odometer-wheel {
     --digit-height: clamp(56px, 16vw, 76px);
+    --visible-height: clamp(64px, 16vw, 84px);
     width: clamp(34px, 11vw, 50px);
   }
 
   .clock-card--us .odometer-wheel {
     --digit-height: clamp(56px, 16vw, 70px);
+    --visible-height: clamp(64px, 16vw, 78px);
     width: clamp(34px, 11vw, 42px);
   }
 
