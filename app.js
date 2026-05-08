@@ -153,6 +153,26 @@ function weatherCodeToNl(code) {
   return "Weer";
 }
 
+function celsiusToFahrenheit(c) {
+  return (c * 9) / 5 + 32;
+}
+
+function formatTemperature(tempC, freedomUnits) {
+  if (freedomUnits) {
+    const n = Math.round(celsiusToFahrenheit(tempC));
+    return `<strong>${n}</strong><span class="clock-freedom-units-label"> Freedom units</span>`;
+  }
+  return `${Math.round(tempC)}°C`;
+}
+
+/** Platte tekst voor aria-label (zonder HTML). */
+function formatTemperatureAria(tempC, freedomUnits) {
+  if (freedomUnits) {
+    return `${Math.round(celsiusToFahrenheit(tempC))} Freedom units`;
+  }
+  return `${Math.round(tempC)}°C`;
+}
+
 function buildWeatherUrl(lat, lon) {
   const params = new URLSearchParams({
     latitude: String(lat),
@@ -187,8 +207,10 @@ async function fetchWeatherForCard(card) {
       throw new Error("Ontbrekende weergegevens");
     }
 
+    const freedomUnits = card.classList.contains("clock-card--us");
     const desc = weatherCodeToNl(code);
-    const tempLabel = `${Math.round(temp)}°C`;
+    const tempHtml = formatTemperature(temp, freedomUnits);
+    const tempAria = formatTemperatureAria(temp, freedomUnits);
     const shorts = shortsVerdict(temp, code);
     const bbq = card.hasAttribute("data-bbq-brent") ? brentOutdoorSmokeBbqVerdict(code) : null;
     const brentLine = bbq
@@ -198,14 +220,14 @@ async function fetchWeatherForCard(card) {
       </span>`
       : "";
 
-    let aria = `Weer: ${tempLabel}, ${desc}. ${shorts.aria}`;
+    let aria = `Weer: ${tempAria}, ${desc}. ${shorts.aria}`;
     if (bbq) {
       aria += `. ${bbq.aria}`;
     }
 
     el.innerHTML = `
       <span class="clock-weather-line">
-        <span class="clock-weather-temp">${tempLabel}</span>
+        <span class="clock-weather-temp">${tempHtml}</span>
         <span class="clock-weather-desc">${desc}</span>
       </span>
       <span class="clock-shorts clock-shorts--${shorts.ok ? "yes" : "no"}" role="status">
@@ -230,3 +252,175 @@ setInterval(updateClocks, 1000);
 
 refreshAllWeather();
 setInterval(refreshAllWeather, WEATHER_REFRESH_MS);
+
+/* --- VS-vlag: vuurwerk (canvas) --- */
+
+const FIREWORK_PALETTE = ["#ff3355", "#ffffff", "#5eb3ff", "#ffd04a", "#b8f4ff"];
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function createFireworksState() {
+  const canvas = document.createElement("canvas");
+  canvas.className = "fireworks-canvas";
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+  return {
+    canvas,
+    ctx,
+    particles: [],
+    rafId: 0,
+    lastBurstAt: 0,
+    running: false,
+    onResize: null,
+  };
+}
+
+let fireworksState = null;
+
+function resizeFireworksCanvas(state) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  state.canvas.width = w * dpr;
+  state.canvas.height = h * dpr;
+  state.canvas.style.width = `${w}px`;
+  state.canvas.style.height = `${h}px`;
+  state.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function spawnBurst(state, cx, cy, count = 72) {
+  state.lastBurstAt = Date.now();
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2.2 + Math.random() * 6.5;
+    state.particles.push({
+      x: cx,
+      y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 1.2,
+      life: 0.92 + Math.random() * 0.28,
+      decay: 0.011 + Math.random() * 0.014,
+      color: FIREWORK_PALETTE[Math.floor(Math.random() * FIREWORK_PALETTE.length)],
+      size: 1.1 + Math.random() * 2.4,
+    });
+  }
+}
+
+function tickFireworks() {
+  const state = fireworksState;
+  if (!state) return;
+
+  const ctx = state.ctx;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const particles = state.particles;
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.vy += 0.11;
+    p.vx *= 0.992;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life -= p.decay;
+    if (p.life <= 0) {
+      particles.splice(i, 1);
+      continue;
+    }
+    ctx.globalAlpha = Math.min(1, p.life);
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
+
+  const quietMs = Date.now() - state.lastBurstAt;
+  if (particles.length === 0 && quietMs > 2200) {
+    teardownFireworks();
+    return;
+  }
+
+  state.rafId = requestAnimationFrame(tickFireworks);
+}
+
+function teardownFireworks() {
+  const state = fireworksState;
+  if (!state) return;
+  cancelAnimationFrame(state.rafId);
+  window.removeEventListener("resize", state.onResize);
+  state.canvas.remove();
+  fireworksState = null;
+}
+
+function launchFireworksFromFlag(anchorX, anchorY) {
+  if (prefersReducedMotion()) return;
+
+  let state = fireworksState;
+  if (!state) {
+    state = createFireworksState();
+    fireworksState = state;
+    state.onResize = () => resizeFireworksCanvas(state);
+    window.addEventListener("resize", state.onResize);
+  }
+
+  resizeFireworksCanvas(state);
+  state.lastBurstAt = Date.now();
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  const bursts = [
+    [
+      anchorX + (Math.random() - 0.5) * 70,
+      Math.max(72, anchorY - 90 - Math.random() * 130),
+      0,
+    ],
+    [w * (0.18 + Math.random() * 0.64), h * (0.1 + Math.random() * 0.22), 140],
+    [w * (0.12 + Math.random() * 0.76), h * (0.08 + Math.random() * 0.2), 280],
+    [w * (0.25 + Math.random() * 0.5), h * (0.12 + Math.random() * 0.18), 420],
+  ];
+
+  bursts.forEach(([x, y, delay]) => {
+    window.setTimeout(() => {
+      if (!fireworksState) return;
+      spawnBurst(fireworksState, x, y);
+    }, delay);
+  });
+
+  if (!state.running) {
+    state.running = true;
+    tickFireworks();
+  }
+}
+
+function initUsFlagFireworks() {
+  document.querySelectorAll(".clock-card--us .flag-badge").forEach((el) => {
+    el.setAttribute("role", "button");
+    el.tabIndex = 0;
+    const prev = el.getAttribute("aria-label") || el.alt || "Amerikaanse vlag";
+    el.setAttribute("aria-label", `${prev}: tik voor vuurwerk`);
+
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const r = el.getBoundingClientRect();
+      launchFireworksFromFlag(r.left + r.width / 2, r.top + r.height / 2);
+    });
+
+    el.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      const r = el.getBoundingClientRect();
+      launchFireworksFromFlag(r.left + r.width / 2, r.top + r.height / 2);
+    });
+  });
+}
+
+initUsFlagFireworks();
