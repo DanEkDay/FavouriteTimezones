@@ -136,6 +136,32 @@ body {
   overflow: hidden;
 }
 
+.clock-card--us .flag-badge {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.clock-card--us .flag-badge:hover {
+  transform: scale(1.06);
+  box-shadow:
+    0 8px 20px rgba(2, 10, 10, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.clock-card--us .flag-badge:focus-visible {
+  outline: 2px solid var(--lemon-custard);
+  outline-offset: 3px;
+}
+
+.fireworks-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10000;
+}
+
 .flag-badge--friesland {
   width: 50px;
   height: 34px;
@@ -148,12 +174,16 @@ body {
 .clock-card--us {
   grid-column: span 4;
   display: grid;
-  grid-template-rows: 92px auto;
+  grid-template-rows: auto auto 1fr;
 }
 
 .clock-card--us .clock-label {
   font-size: 0.94rem;
   letter-spacing: 0;
+}
+
+.clock-card--us .clock-weather {
+  margin-top: -12px;
 }
 
 .clock-card--us .clock-display {
@@ -212,6 +242,93 @@ body {
   font-size: 0.95rem;
   color: var(--text-soft);
   max-width: 100%;
+}
+
+.clock-weather {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: -6px 0 14px;
+  padding: 0;
+  padding-right: 68px;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--lemon-custard);
+  min-height: 2.9em;
+}
+
+.clock-weather-line {
+  display: block;
+}
+
+.clock-weather-temp {
+  font-weight: 700;
+  margin-right: 0.45em;
+}
+
+.clock-freedom-units-label {
+  font-weight: 700;
+  font-size: 1em;
+  color: var(--lemon-custard);
+}
+
+.clock-weather-desc {
+  font-weight: 300;
+  color: var(--text-soft);
+}
+
+.clock-shorts {
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.clock-shorts strong {
+  font-weight: 700;
+}
+
+.clock-shorts--yes {
+  color: var(--lemon-custard);
+}
+
+.clock-shorts--yes strong {
+  color: #8fe88a;
+}
+
+.clock-shorts--no {
+  color: var(--text-soft);
+}
+
+.clock-shorts--no strong {
+  color: rgba(245, 240, 235, 0.92);
+}
+
+.clock-bbq {
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+
+.clock-bbq strong {
+  font-weight: 700;
+}
+
+.clock-bbq--yes {
+  color: var(--citrus-blaze);
+}
+
+.clock-bbq--yes strong {
+  color: #ffb39e;
+}
+
+.clock-bbq--no {
+  color: var(--text-soft);
+}
+
+.clock-bbq--no strong {
+  color: rgba(245, 240, 235, 0.92);
 }
 
 .clock-display {
@@ -373,6 +490,10 @@ body {
 
   .clock-copy {
     min-height: 54px;
+    padding-right: 54px;
+  }
+
+  .clock-weather {
     padding-right: 54px;
   }
 
